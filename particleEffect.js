@@ -28,6 +28,8 @@ class Particle {
 
 // Animation loop
 let frame = 0;
+let frameCount = 0; // Counts the animation loop iterations
+const frameDelay = 2; // Number of loops to wait before moving to the next frame
 
 function animate(particles) {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous frame
@@ -38,8 +40,16 @@ function animate(particles) {
   if (particles[frame]) {
     particles[frame].forEach((particle) => particle.draw(ctx));
   }
-  frame = (frame + 1) % particles.length; // Loop through frames
-  requestAnimationFrame(() => animate(particles));
+  // frame = (frame + 1) % particles.length; // Loop through frames
+	
+  // Increment frameCount and switch frames after a delay
+  frameCount++;
+  if (frameCount >= frameDelay) {
+		frame = (frame + 1) % particles.length; // Move to the next frame
+    frameCount = 0; // Reset the frame count
+  }
+	
+	requestAnimationFrame(() => animate(particles));
 }
 
 // Fetch JSON data and build particles
@@ -62,7 +72,7 @@ fetch("./particleData.json")
         y = (y / 1080) * canvas.height;
 
         // Adjust size and opacity
-        const size = sizes[i] / 10000; // Adjust size scaling
+        const size = sizes[i] / 20000; // Adjust size scaling
         const opacity = Math.min(opacities[i] / 2, 1);
 
         return new Particle(x, y, size, opacity);
