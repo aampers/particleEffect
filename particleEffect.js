@@ -38,6 +38,7 @@ function animate(particles) {
   }
   frame = (frame + 1) % particles.length; // Loop through frames
   requestAnimationFrame(() => animate(particles));
+	console.log(`Animating frame: ${frame}`);
 }
 
 // Fetch JSON data and build particles
