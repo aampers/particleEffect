@@ -62,7 +62,7 @@ fetch("./particleData.json")
         y = (y / 1080) * canvas.height;
 
         // Adjust size and opacity
-        const size = sizes[i]; // Adjust size scaling
+        const size = sizes[i] / 10000; // Adjust size scaling
         const opacity = Math.min(opacities[i] / 2, 1);
 
         return new Particle(x, y, size, opacity);
