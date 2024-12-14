@@ -18,7 +18,6 @@ class Particle {
   }
 
   draw(ctx) {
-    console.log(`Drawing particle at (${this.x}, ${this.y}) with size ${this.size} and opacity ${this.opacity}`);
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; // Set particles to white
@@ -29,16 +28,18 @@ class Particle {
 
 // Animation loop
 let frame = 0;
+
 function animate(particles) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "black"; // Paint the background black each frame
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous frame
+  ctx.fillStyle = "black"; // Redraw black background
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw particles for the current frame
   if (particles[frame]) {
     particles[frame].forEach((particle) => particle.draw(ctx));
   }
   frame = (frame + 1) % particles.length; // Loop through frames
   requestAnimationFrame(() => animate(particles));
-	console.log(`Animating frame: ${frame}`);
 }
 
 // Fetch JSON data and build particles
@@ -53,11 +54,17 @@ fetch("./particleData.json")
     // Create particles from JSON data
     const particles = [];
     for (let i = 0; i < positions.length; i++) {
-      const frameParticles = positions[i].map(() => {
-        const x = Math.random() * canvas.width; // Randomize for testing
-        const y = Math.random() * canvas.height;
-        const size = 5; // Fixed size for testing
-        const opacity = 0.8; // Fixed opacity for testing
+      const frameParticles = positions[i].map((position) => {
+				let [x, y] = position;
+				
+				// Normalize positions to canvas dimensions
+        x = (x / 1920) * canvas.width;
+        y = (y / 1080) * canvas.height;
+
+        // Adjust size and opacity
+        const size = sizes[i]; // Adjust size scaling
+        const opacity = Math.min(opacities[i] / 2, 1);
+
         return new Particle(x, y, size, opacity);
       });
       particles.push(frameParticles);
